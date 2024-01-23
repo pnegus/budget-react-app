@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import {
     ActivityIndicator,
     SafeAreaView,
@@ -29,16 +29,58 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ContextMenu from "react-native-context-menu-view";
+import {
+  HeaderButtons,
+  Item,
+  HiddenItem,
+  OverflowMenu,
+  Divider,
+  ItemProps,
+  HiddenItemProps,
+  HeaderButtonProps,
+  HeaderButton,
+} from 'react-navigation-header-buttons';
 
 //STYLES IMPORTS
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { LinearGradient } from 'react-native-linear-gradient';
 import { RadialGradient } from 'react-native-svg';
+import { Icon, FAB, ListItem } from '@rneui/themed';
+import {
+  Colors,
+} from 'react-native/Libraries/NewAppScreen';
+
+const mapNameToIcon = {
+  "Food / Groceries": "food",
+  "Gas": "gas-station",
+  "Bills": "cash-multiple",
+  "Misc.": "dots-horizontal",
+}
 
 function MainMenuScreen({ route, navigation }): React.JSX.Element {
+  const isDarkMode = useColorScheme() === 'dark';
 
+  const backgroundStyle = {
+    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  };
+  
   const {data: userData, isPending: isUserDataPending, error: userDataError} = queryUserData();
   const purchaseTotal = userData === undefined ? null : userData.purchases.reduce((acc, init) => acc + init.cost, 0);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <HeaderButtons>
+          <Item 
+            title = "Settings" 
+            onPress = {() => {
+                navigation.navigate('Settings');
+              }}
+          />
+        </HeaderButtons>
+      ),
+    });
+  }, [navigation]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -50,8 +92,8 @@ function MainMenuScreen({ route, navigation }): React.JSX.Element {
               ) : 
               (
                   <React.Fragment>
+                      <Text style = {[styles.textDesc, {padding: 20}]}> Current Weekly Budget: ${userData.budget}</Text>
                       <SafeAreaView style = {styles.budgetProgressContainer}>
-                          <Text style = {styles.textDesc}> Current Weekly Budget: ${userData.budget}</Text>
                           <AnimatedCircularProgress
                               size={120}
                               width={30}
@@ -68,20 +110,26 @@ function MainMenuScreen({ route, navigation }): React.JSX.Element {
                       </SafeAreaView>
                       <SafeAreaView style = {styles.purchasesListHeader}>
                           <Text style = {styles.textDesc}>Purchases</Text>
-                          <Button title = "+" onPress = {() => {
-                              //navigate to add purchase screen
-                              //pass in budgetData
-                              navigation.navigate('Add Purchase');
+                          <FAB 
+                              icon = {{name: 'add', color: 'white'}} 
+                              size = 'small' 
+                              color = 'gray'
+                              onPress = {() => {
+                                //navigate to add purchase screen
+                                //pass in budgetData
+                                navigation.navigate('Add Purchase');
                           }}/>
                       </SafeAreaView>
                       <ScrollView style = {styles.purchasesListTable}>
                           {
                               userData.purchases.map((purchase, index) => {
                                   return (
-                                      <SafeAreaView key = {index} style = {styles.purchasesRowElement}>
+                                      <ListItem key = {index} containerStyle = {[styles.purchasesRowElement, backgroundStyle]}>
+                                          <Icon name= {mapNameToIcon[purchase.name]} type="material-community" color="grey" />
+                                          {/* <Text>{purchase.date}</Text> */}
                                           <Text>{purchase.name}</Text>
-                                          <Text>{purchase.cost}</Text>
-                                      </SafeAreaView>
+                                          <Text>${purchase.cost}</Text>
+                                      </ListItem>
                                   );
                               })
                           }
@@ -108,7 +156,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   infoContainer: {
-    justifyContent: 'center',
     alignItems: 'center',
     flex: 0.9,
   },
@@ -119,8 +166,7 @@ const styles = StyleSheet.create({
   },
 
   purchasesListHeader: {
-      flex: 0.,
-      padding: 10,
+      padding: 20,
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
@@ -129,24 +175,13 @@ const styles = StyleSheet.create({
   purchasesListTable: {
       flex: 1,
       width: '80%',
-      // borderWidth: 0.5,
-      // borderRadius: 5,
-      // justifyContent: 'center',
   },
   purchasesRowElement: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignSelf: 'center',
-      alignItems: 'center',
-      width: '60%',
-      // borderWidth: 0.5,
-      // borderRadius: 5,
+    justifyContent: 'space-between',
+    padding: 10,
   },
   budgetProgressContainer: {
-      paddingTop: 10,
-      width: '80%',
-      flex: 0.5,
-      justifyContent: 'center',
+      // paddingTop: 30,
       alignItems: 'center',
   },
   textDesc: {

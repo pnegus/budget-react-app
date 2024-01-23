@@ -9,6 +9,7 @@ import FirstLaunchScreen from './components/FirstLaunchScreen';
 import AddPurchaseScreen from './components/AddPurchaseScreen';
 import MainMenuScreen from './components/MainMenuScreen';
 import EditPurchaseScreen from './components/EditPurchaseScreen';
+import SettingsScreen from './components/SettingsScreen';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -38,10 +39,6 @@ import {
 
 import {
   Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
 let checkFirstLaunchAsync = async (): Promise<boolean> => {
@@ -93,6 +90,7 @@ function App(): React.JSX.Element {
         <NavigationContainer>
           <MainAppStack.Navigator>
             <MainAppStack.Screen name = "Main Menu" component = {MainMenuScreen}/>
+            <MainAppStack.Screen name = "Settings" component = {SettingsScreen}/>
             <MainAppStack.Screen name = "Add Purchase" component = {AddPurchaseScreen}/>
             <MainAppStack.Screen name = "InfoContainerScreen" component = {EditPurchaseScreen}/>
           </MainAppStack.Navigator>

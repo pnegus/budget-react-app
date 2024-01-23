@@ -17,6 +17,8 @@ ButtonGroup,
 Input,
 } from '@rneui/base';
 
+import { Chip } from '@rneui/themed';
+
 import {
 Colors,
 DebugInstructions,
@@ -52,6 +54,7 @@ function AddPurchaseScreen({ route, navigation }): React.JSX.Element {
 
     const [selectedIndex, setSelectedIndex] = React.useState(null);
     const [price, setPrice] = React.useState(0);
+    const [addBtnDisabled, setAddBtnDisabled] = React.useState(true);
 
     const {mutate: mutateUserData} = addUserPurchase();
 
@@ -64,9 +67,12 @@ function AddPurchaseScreen({ route, navigation }): React.JSX.Element {
 
             <SafeAreaView style = {styles.priceTypeContainer}>
                 <ButtonGroup 
-                    buttons = {["Food / Groceries", "Gas", "Bills", "Misc."]} 
+                    buttons = {["Food / Groceries", "Gas", "Bills", "Misc."]}
                     selectedIndex = {selectedIndex} 
-                    onPress = {(value) => {setSelectedIndex(value)}}>
+                    onPress = {(value) => {
+                        setSelectedIndex(value);
+                        price == 0 ? setAddBtnDisabled(true) : setAddBtnDisabled(false);
+                    }}>
                 </ButtonGroup>
             </SafeAreaView>
 
@@ -79,34 +85,30 @@ function AddPurchaseScreen({ route, navigation }): React.JSX.Element {
                     <Button 
                         style = {styles.pricePickerElem} 
                         title = {item.toString()} 
-                        onPress = {() => {setPrice(item)}}>
+                        onPress = {() => {
+                            setPrice(item);
+                            selectedIndex === null ? setAddBtnDisabled(true) : setAddBtnDisabled(false);
+                        }}>
                     </Button>}> 
                 </FlatList>
             </SafeAreaView>
 
             <SafeAreaView style = {styles.confirmButton}>
-                <Button title = "Add Purchase" onPress = {() => {
+                <Chip disabled = {addBtnDisabled} title = "Add Purchase" onPress = {() => {
                         if (selectedIndex == null || price == 0) {
                             //display toast
                             Toast.show({
                                 type: 'error',
                                 text1: 'Error',
-                                text2: 'Please select a purchase type and price',
                             });
                         }
                         else {
-                            //add purchase to budgetData, and navigate to mainmenu
-                            // userData.purchases.push({
-                            //     name: PurchaseType[selectedIndex],
-                            //     cost: price,
-                            // });
-                            // const mutation = addUserPurchase();
-                            const newPurchase = {name: purchaseTypeWheel[selectedIndex], cost: price};
+                            const newPurchase = {name: purchaseTypeWheel[selectedIndex], cost: price, date: new Date().toLocaleDateString()};
                             mutateUserData(newPurchase);
                             navigation.navigate('Main Menu');
                         }
                     }}>  
-                </Button>
+                </Chip>
             </SafeAreaView>
 
         </SafeAreaView>
