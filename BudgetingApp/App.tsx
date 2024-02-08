@@ -10,6 +10,7 @@ import AddPurchaseScreen from './components/AddPurchaseScreen';
 import MainMenuScreen from './components/MainMenuScreen';
 import EditPurchaseScreen from './components/EditPurchaseScreen';
 import SettingsScreen from './components/SettingsScreen';
+import {ThemeContext} from './components/Contexts';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -68,36 +69,38 @@ function App(): React.JSX.Element {
     });
   }, []);
 
-  const isDarkMode = useColorScheme() === 'dark';
+  const theme = useColorScheme() === 'dark' ? 'dark' : 'light';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const backgroundStyle = {backgroundColor: theme === 'dark' ? Colors.darker : Colors.lighter};
 
   return (
-    hasBeenLaunched === null ? (
-      <SafeAreaView style = {styles.default}><ActivityIndicator size = "large"/></SafeAreaView>
-    ) : 
-    hasBeenLaunched === false ? (
-      <NavigationContainer>
-        <FirstLaunchStack.Navigator>
-          <FirstLaunchStack.Screen name = "Welcome" component = {FirstLaunchScreen}/>
-        </FirstLaunchStack.Navigator>
-      </NavigationContainer>
-    ) : 
-    (
-      <QueryClientProvider client = {queryClient}>
-        <NavigationContainer>
-          <MainAppStack.Navigator>
-            <MainAppStack.Screen name = "Main Menu" component = {MainMenuScreen}/>
-            <MainAppStack.Screen name = "Settings" component = {SettingsScreen}/>
-            <MainAppStack.Screen name = "Add Purchase" component = {AddPurchaseScreen}/>
-            <MainAppStack.Screen name = "InfoContainerScreen" component = {EditPurchaseScreen}/>
-          </MainAppStack.Navigator>
-          <Toast></Toast>
-        </NavigationContainer>
-      </QueryClientProvider>
-    )
+    <ThemeContext.Provider value = {theme}>
+      {
+        hasBeenLaunched === null ? (
+          <SafeAreaView style = {[styles.default, backgroundStyle]}><ActivityIndicator size = "large"/></SafeAreaView>
+        ) : 
+        hasBeenLaunched === false ? (
+          <NavigationContainer>
+            <FirstLaunchStack.Navigator>
+              <FirstLaunchStack.Screen name = "Welcome" component = {FirstLaunchScreen}/>
+            </FirstLaunchStack.Navigator>
+          </NavigationContainer>
+        ) : 
+        (
+          <QueryClientProvider client = {queryClient}>
+            <NavigationContainer>
+              <MainAppStack.Navigator>
+                <MainAppStack.Screen name = "Main Menu" component = {MainMenuScreen}/>
+                <MainAppStack.Screen name = "Settings" component = {SettingsScreen}/>
+                <MainAppStack.Screen name = "Add Purchase" component = {AddPurchaseScreen}/>
+                <MainAppStack.Screen name = "InfoContainerScreen" component = {EditPurchaseScreen}/>
+              </MainAppStack.Navigator>
+              <Toast></Toast>
+            </NavigationContainer>
+          </QueryClientProvider>
+        )
+      }
+    </ThemeContext.Provider>
   );
 }
 

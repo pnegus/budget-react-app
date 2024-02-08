@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
     SafeAreaView,
@@ -36,6 +36,8 @@ import {
   useQueryClient,
 } from '@tanstack/react-query'
 
+import { ThemeContext } from './Contexts';
+
 const priceInput = React.createRef();
 
 const purchaseTypeWheel = ["Food / Groceries", "Gas", "Bills", "Misc."];
@@ -44,11 +46,8 @@ function AddPurchaseScreen({ route, navigation }): React.JSX.Element {
     const queryClient = useQueryClient();
     const {data: userData, isPending: isUserDataPending, error: userDataError} = queryUserData();
 
-    const isDarkMode = useColorScheme() === 'dark';
-
-    const backgroundStyle = {
-        backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    };
+    const theme = useContext(ThemeContext);
+    const backgroundStyle = {backgroundColor: theme === 'dark' ? Colors.darker : Colors.lighter};
 
     const pricePicker = Array(100).fill(1).map((n, i) => n + i);
 

@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useContext } from 'react';
 import {
     ActivityIndicator,
     SafeAreaView,
@@ -9,10 +9,6 @@ import {
     useColorScheme,
     View,
   } from 'react-native';
-
-  import { 
-    Button,
-  } from '@rneui/base';
 
 import PurchaseListItem from './PurchaseListItem';
 
@@ -52,15 +48,14 @@ import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
 
+import { ThemeContext } from './Contexts';
+
 const categories = ["Food / Groceries", "Gas", "Bills", "Misc."];
 const iconNames = ["food", "gas-station", "cash-multiple", "dots-horizontal"];
 
 function MainMenuScreen({ route, navigation }): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const theme = useContext(ThemeContext);
+  const backgroundStyle = {backgroundColor: theme === 'dark' ? Colors.darker : Colors.lighter};
   
   const {data: userData, isPending: isUserDataPending, error: userDataError} = queryUserData();
   const purchaseTotal = userData === undefined ? null : userData.purchases.reduce((acc, init) => acc + init.cost, 0);
@@ -122,7 +117,7 @@ function MainMenuScreen({ route, navigation }): React.JSX.Element {
                           {
                             iconNames.map((iconName, iconIndex) => {
                               return (
-                                <PurchaseListItem indexKey = {iconIndex} title = {categories[iconIndex]} iconName = {iconName}/>
+                                <PurchaseListItem key = {iconName} title = {categories[iconIndex]} iconName = {iconName}/>
                               );
                             })
                           }

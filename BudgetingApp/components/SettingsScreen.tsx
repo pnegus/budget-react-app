@@ -39,6 +39,13 @@ function SettingsScreen(): React.JSX.Element {
                 <ListItem.Chevron />
             </ListItem>
             <ListItem>
+                <Icon name="pencil" type="material-community" color="grey" />
+                <ListItem.Content>
+                <ListItem.Title>Add Purchase Category</ListItem.Title>
+                </ListItem.Content>
+                <ListItem.Chevron />
+            </ListItem>
+            <ListItem>
                 <Icon name="file-chart" type="material-community" color="grey" />
                 <ListItem.Content>
                 <ListItem.Title>View All Data</ListItem.Title>
