@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useCallback} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
     SafeAreaView,
@@ -17,7 +17,7 @@ ButtonGroup,
 Input,
 } from '@rneui/base';
 
-import { Chip } from '@rneui/themed';
+import { Chip, ListItem } from '@rneui/themed';
 
 import {
 Colors,
@@ -43,19 +43,28 @@ const priceInput = React.createRef();
 const purchaseTypeWheel = ["Food / Groceries", "Gas", "Bills", "Misc."];
 
 function AddPurchaseScreen({ route, navigation }): React.JSX.Element {
-    const queryClient = useQueryClient();
-    const {data: userData, isPending: isUserDataPending, error: userDataError} = queryUserData();
-
     const theme = useContext(ThemeContext);
     const backgroundStyle = {backgroundColor: theme === 'dark' ? Colors.darker : Colors.lighter};
 
     const pricePicker = Array(100).fill(1).map((n, i) => n + i);
 
-    const [selectedIndex, setSelectedIndex] = React.useState(null);
+    const [categoryIndex, setCategoryIndex] = React.useState(null);
+    const [priceIndex, setPriceIndex] = React.useState(0);
     const [price, setPrice] = React.useState(0);
     const [addBtnDisabled, setAddBtnDisabled] = React.useState(true);
 
     const {mutate: mutateUserData} = addUserPurchase();
+
+    const _onViewableItemsChanged = useCallback(({ viewableItems, changed }) => {
+        if (viewableItems.length === 0) {
+            return;
+        }
+        setPriceIndex(viewableItems[0].index);
+        setPrice(viewableItems[0].item);
+        categoryIndex === null ? setAddBtnDisabled(true) : setAddBtnDisabled(false);
+        // console.log("Visible items are", viewableItems);
+        // console.log("Changed in this iteration", changed);
+    }, []);
 
     return (
         <SafeAreaView style={[backgroundStyle, styles.purchaseContainer]}>
@@ -67,9 +76,9 @@ function AddPurchaseScreen({ route, navigation }): React.JSX.Element {
             <SafeAreaView style = {styles.priceTypeContainer}>
                 <ButtonGroup 
                     buttons = {["Food / Groceries", "Gas", "Bills", "Misc."]}
-                    selectedIndex = {selectedIndex} 
+                    selectedIndex = {categoryIndex} 
                     onPress = {(value) => {
-                        setSelectedIndex(value);
+                        setCategoryIndex(value);
                         price == 0 ? setAddBtnDisabled(true) : setAddBtnDisabled(false);
                     }}>
                 </ButtonGroup>
@@ -80,21 +89,31 @@ function AddPurchaseScreen({ route, navigation }): React.JSX.Element {
             </SafeAreaView>
 
             <SafeAreaView style = {styles.pricePickerContainer}>
-                <FlatList data = {pricePicker} renderItem ={({item}) => 
-                    <Button 
-                        style = {styles.pricePickerElem} 
-                        title = {item.toString()} 
-                        onPress = {() => {
-                            setPrice(item);
-                            selectedIndex === null ? setAddBtnDisabled(true) : setAddBtnDisabled(false);
-                        }}>
-                    </Button>}> 
+                <FlatList 
+                    ref={(ref) => {
+                        this.flatListRef = ref;
+                    }}
+                    onMomentumScrollEnd={(event) => {
+                        // work with: index
+                        this.flatListRef.scrollToIndex({animated: true, index: priceIndex});
+                    }}
+                    onViewableItemsChanged={_onViewableItemsChanged}
+                    showsVerticalScrollIndicator={false}
+                    data = {pricePicker} 
+                    renderItem ={({item}) => 
+                        <ListItem 
+                            containerStyle = {[styles.priceElemContainer, {backgroundColor: item === price ? 'gray' : 'transparent'}]}
+                            >
+                            <ListItem.Content style = {styles.pricePickerElem}>
+                                <Text>{item}</Text>
+                            </ListItem.Content>
+                        </ListItem>}> 
                 </FlatList>
             </SafeAreaView>
 
             <SafeAreaView style = {styles.confirmButton}>
                 <Chip disabled = {addBtnDisabled} title = "Add Purchase" onPress = {() => {
-                        if (selectedIndex == null || price == 0) {
+                        if (categoryIndex == null || price == 0) {
                             //display toast
                             Toast.show({
                                 type: 'error',
@@ -102,7 +121,7 @@ function AddPurchaseScreen({ route, navigation }): React.JSX.Element {
                             });
                         }
                         else {
-                            const newPurchase = {name: purchaseTypeWheel[selectedIndex], cost: price, date: new Date().toLocaleDateString()};
+                            const newPurchase = {name: purchaseTypeWheel[categoryIndex], cost: price, date: new Date().toLocaleDateString()};
                             mutateUserData(newPurchase);
                             navigation.navigate('Main Menu');
                         }
@@ -136,7 +155,12 @@ const styles = StyleSheet.create({
         // width: '75%',
     },
     pricePickerElem: {
-        // width: "50%",
+        alignItems: 'center',
+    },
+    priceElemContainer: {
+        // padding: 10,
+        // width: '50%',
+        // alignSelf: 'center',
     },
     pricePickerContainer: {
         flex: 0.75,
