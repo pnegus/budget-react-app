@@ -20,6 +20,13 @@ const USER_DATA = {
         ]
 };
 
+const purchaseEx = {
+    name: 'test',
+    cost: 10,
+    date: "2021-10-10",
+};
+
+
 export const queryUserData = () => useQuery({
     queryKey: ['budgetData'],
     queryFn: async ({queryKey}) => {
@@ -32,7 +39,7 @@ export const queryUserData = () => useQuery({
         let lastDate = currentWeekData.week;
         let currentDate = new Date().getTime();
         if (currentDate - lastDate > 604800000) {
-            userDataObj.weekData.push({
+            userDataObj.weekData.unshift({
                 week: currentDate,
                 budget: 100,
                 amountSpent: 0,

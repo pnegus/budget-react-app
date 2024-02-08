@@ -14,6 +14,8 @@ import {
     Button,
   } from '@rneui/base';
 
+import PurchaseListItem from './PurchaseListItem';
+
 //DATA IMPORTS
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {PropsWithChildren} from 'react';
@@ -50,12 +52,8 @@ import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
 
-const mapNameToIcon = {
-  "Food / Groceries": "food",
-  "Gas": "gas-station",
-  "Bills": "cash-multiple",
-  "Misc.": "dots-horizontal",
-}
+const categories = ["Food / Groceries", "Gas", "Bills", "Misc."];
+const iconNames = ["food", "gas-station", "cash-multiple", "dots-horizontal"];
 
 function MainMenuScreen({ route, navigation }): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -120,18 +118,13 @@ function MainMenuScreen({ route, navigation }): React.JSX.Element {
                                 navigation.navigate('Add Purchase');
                           }}/>
                       </SafeAreaView>
-                      <ScrollView style = {styles.purchasesListTable}>
+                      <ScrollView style = {[styles.purchasesListTable, backgroundStyle]}>
                           {
-                              userData.purchases.map((purchase, index) => {
-                                  return (
-                                      <ListItem key = {index} containerStyle = {[styles.purchasesRowElement, backgroundStyle]}>
-                                          <Icon name= {mapNameToIcon[purchase.name]} type="material-community" color="grey" />
-                                          {/* <Text>{purchase.date}</Text> */}
-                                          <Text>{purchase.name}</Text>
-                                          <Text>${purchase.cost}</Text>
-                                      </ListItem>
-                                  );
-                              })
+                            iconNames.map((iconName, iconIndex) => {
+                              return (
+                                <PurchaseListItem indexKey = {iconIndex} title = {categories[iconIndex]} iconName = {iconName}/>
+                              );
+                            })
                           }
                       </ScrollView>
                   </React.Fragment>    
