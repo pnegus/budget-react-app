@@ -26,6 +26,24 @@ const purchaseEx = {
     date: "2021-10-10",
 };
 
+//helper functions
+async function getUserData() {
+    let currentBudgetData = await AsyncStorage.getItem('budgetData');
+        if (currentBudgetData === null) {
+            currentBudgetData = JSON.stringify(USER_DATA);
+        }
+    return JSON.parse(currentBudgetData);
+}
+
+async function setUserData(data: Object) {
+    try{
+        await AsyncStorage.setItem('budgetData', JSON.stringify(data));
+    }
+    catch(e) {
+        console.log(e);
+    }
+}
+
 
 export const queryUserData = () => useQuery({
     queryKey: ['budgetData'],
@@ -61,21 +79,38 @@ export const addUserPurchase = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async (newPurchase: {name: string; cost: number}) => {
-            let currentBudgetData = await AsyncStorage.getItem('budgetData');
-            if (currentBudgetData === null) {
-                currentBudgetData = JSON.stringify(USER_DATA);
-            }
-            let newBudgetData = JSON.parse(currentBudgetData);
+            let newBudgetData = await getUserData();
             newBudgetData.weekData[0].purchases.push(newPurchase);
-            try{
-                await AsyncStorage.setItem('budgetData', JSON.stringify(newBudgetData));
-            }
-            catch(e) {
-                console.log(e);
-            }
+            await setUserData(newBudgetData);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ['budgetData']});
         },
     })
 };
+
+export const editUserBudget = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (newBudget: number) => {
+            let newBudgetData = await getUserData();
+            newBudgetData.weekData[0].budget = newBudget;
+            await setUserData(newBudgetData);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['budgetData']});
+        },
+    })
+}
+
+export const resetData = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async () => {
+            await setUserData(USER_DATA);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['budgetData']});
+        },
+    })
+}

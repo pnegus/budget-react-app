@@ -18,9 +18,10 @@ LearnMoreLinks,
 ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import { ListItem } from '@rneui/themed';
-import { Icon, FAB } from '@rneui/themed';
+import { Icon, FAB, Input } from '@rneui/themed';
 
+import SettingsOverlay from './SettingsOverlay';
+import { resetData, editUserBudget } from './AppQueries';
 
 function SettingsScreen(): React.JSX.Element {
     const isDarkMode = useColorScheme() === 'dark';
@@ -29,36 +30,60 @@ function SettingsScreen(): React.JSX.Element {
         backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     };
 
+    const {mutate: mutateUserBudget} = editUserBudget();
+    const editBudgetInput = React.createRef();
+    const [budget, setBudget] = React.useState(0);
+
+    const {mutate: resetUserBudget} = resetData();
+
     return (
         <SafeAreaView style={backgroundStyle}>
-            <ListItem>
-                <Icon name="pencil" type="material-community" color="grey" />
-                <ListItem.Content>
-                <ListItem.Title>Edit Weekly Budget</ListItem.Title>
-                </ListItem.Content>
-                <ListItem.Chevron />
-            </ListItem>
-            <ListItem>
-                <Icon name="pencil" type="material-community" color="grey" />
-                <ListItem.Content>
-                <ListItem.Title>Add Purchase Category</ListItem.Title>
-                </ListItem.Content>
-                <ListItem.Chevron />
-            </ListItem>
-            <ListItem>
-                <Icon name="file-chart" type="material-community" color="grey" />
-                <ListItem.Content>
-                <ListItem.Title>View All Data</ListItem.Title>
-                </ListItem.Content>
-                <ListItem.Chevron />
-            </ListItem>
-            <ListItem>
-                <Icon name="trash-can-outline" type="material-community" color="grey" />
-                <ListItem.Content>
-                <ListItem.Title>Delete All Data</ListItem.Title>
-                </ListItem.Content>
-                <ListItem.Chevron />
-            </ListItem>
+            <SettingsOverlay 
+                title = "Edit Weekly Budget" 
+                icon = {<Icon name="pencil" type="material-community" color="grey" />} 
+                content = {
+                    <View>
+                        <Text>Enter new weekly budget:</Text>
+                        <Input 
+                            ref = {editBudgetInput}
+                            onChangeText = {(text) => {
+                                setBudget(Number.parseInt(text));
+                            }}
+                        >
+                        </Input>
+                    </View>
+                }
+                action = {
+                    () => {
+                        if (budget <= 0 || budget >= 1000000) {
+                            throw "Invalid input";
+                        }
+                        mutateUserBudget(budget);
+                    }
+                }
+                />
+            <SettingsOverlay 
+                title = "Edit Purchase Categories" 
+                icon = {<Icon name="pencil" type="material-community" color="grey" />} 
+                content = "Edit your weekly budget here"
+                action = {null}
+                />
+            <SettingsOverlay 
+                title = "View Weekly Budget Data" 
+                icon = {<Icon name="file-chart" type="material-community" color="grey" />} 
+                content = "Edit your weekly budget here"
+                action = {null}
+                />
+            <SettingsOverlay 
+                title = "Delete All Data" 
+                icon = {<Icon name="trash-can-outline" type="material-community" color="grey" />} 
+                content = {
+                    <View>
+                        <Text>Are you sure you want to delete all data?</Text>
+                    </View>
+                }
+                action = {() => resetUserBudget()}
+                />
         </SafeAreaView>
     );
 }
