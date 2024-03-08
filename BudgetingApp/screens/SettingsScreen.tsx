@@ -20,8 +20,10 @@ ReloadInstructions,
 
 import { Icon, FAB, Input } from '@rneui/themed';
 
-import SettingsOverlay from './SettingsOverlay';
-import { resetData, editUserBudget } from './AppQueries';
+import SettingsOverlay from '../components/SettingsOverlay';
+import { resetData, editUserBudget } from '../components/AppQueries';
+import EditPurchaseScreen from './EditPurchaseScreen';
+import ShowDataScreen from './ShowDataScreen';
 
 function SettingsScreen(): React.JSX.Element {
     const isDarkMode = useColorScheme() === 'dark';
@@ -37,6 +39,7 @@ function SettingsScreen(): React.JSX.Element {
     const {mutate: resetUserBudget} = resetData();
 
     return (
+        //settingsoverlay is poorly named, these are the components corresponding to each individual setting option
         <SafeAreaView style={backgroundStyle}>
             <SettingsOverlay 
                 title = "Edit Weekly Budget" 
@@ -55,7 +58,7 @@ function SettingsScreen(): React.JSX.Element {
                 }
                 action = {
                     () => {
-                        if (budget <= 0 || budget >= 1000000) {
+                        if (budget <= 0 || budget >= 1000000 || isNaN(budget)) {
                             throw "Invalid input";
                         }
                         mutateUserBudget(budget);
@@ -65,13 +68,13 @@ function SettingsScreen(): React.JSX.Element {
             <SettingsOverlay 
                 title = "Edit Purchase Categories" 
                 icon = {<Icon name="pencil" type="material-community" color="grey" />} 
-                content = "Edit your weekly budget here"
+                content = {<EditPurchaseScreen></EditPurchaseScreen>}
                 action = {null}
                 />
             <SettingsOverlay 
                 title = "View Weekly Budget Data" 
                 icon = {<Icon name="file-chart" type="material-community" color="grey" />} 
-                content = "Edit your weekly budget here"
+                content = {<ShowDataScreen></ShowDataScreen>}
                 action = {null}
                 />
             <SettingsOverlay 

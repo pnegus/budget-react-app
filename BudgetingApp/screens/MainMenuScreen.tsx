@@ -10,13 +10,13 @@ import {
     View,
   } from 'react-native';
 
-import PurchaseListItem from './PurchaseListItem';
+import PurchaseListItem from '../components/PurchaseListItem';
 
 //DATA IMPORTS
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {PropsWithChildren} from 'react';
 import {useState, useEffect } from 'react';
-import { queryUserData } from './AppQueries';
+import { queryUserData } from '../components/AppQueries';
 import {
   useMutation,
   useQuery,
@@ -48,9 +48,9 @@ import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
 
-import { ThemeContext } from './Contexts';
+import { ThemeContext } from '../components/Contexts';
 
-const categories = ["Food / Groceries", "Gas", "Bills", "Misc."];
+const categories = ["Food", "Gas", "Bills", "Misc."];
 const iconNames = ["food", "gas-station", "cash-multiple", "dots-horizontal"];
 
 function MainMenuScreen({ route, navigation }): React.JSX.Element {

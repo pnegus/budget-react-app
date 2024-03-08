@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Overlay, Icon, ListItem } from '@rneui/themed';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 function SettingsOverlay({title, icon, content, action}): React.JSX.Element {
@@ -20,7 +20,9 @@ return (
         </ListItem.Content>
 
         <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
-            {content}
+            <SafeAreaView style = {styles.container}>
+                {content}
+            </SafeAreaView>
             <Button
                 icon={
                 <Icon
@@ -36,6 +38,10 @@ return (
                         try {
                             action();
                             toggleOverlay();
+                            Toast.show({
+                                type: 'success',
+                                text1: "Success!",
+                            })
                         }
                         catch (e) {
                             Toast.show({
@@ -43,6 +49,7 @@ return (
                                 text1: e,
                             });
                         }
+                        
                     }
                 }
             />
@@ -53,19 +60,24 @@ return (
 };
 
 const styles = StyleSheet.create({
-button: {
-  margin: 10,
-},
-textPrimary: {
-  marginVertical: 20,
-  textAlign: 'center',
-  fontSize: 20,
-},
-textSecondary: {
-  marginBottom: 10,
-  textAlign: 'center',
-  fontSize: 17,
-},
+    button: {
+        margin: 10,
+    },
+    textPrimary: {
+        marginVertical: 20,
+        textAlign: 'center',
+        fontSize: 20,
+    },
+    textSecondary: {
+        marginBottom: 10,
+        textAlign: 'center',
+        fontSize: 17,
+    },
+    container: {
+        textAlign: 'center',
+        padding: 20,
+        // alignItems: 'center',
+    }
 });
 
 export default SettingsOverlay;

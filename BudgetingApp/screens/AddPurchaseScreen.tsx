@@ -29,18 +29,18 @@ ReloadInstructions,
 
 import Toast from 'react-native-toast-message';
 
-import { queryUserData, addUserPurchase } from './AppQueries';
+import { queryUserData, addUserPurchase } from '../components/AppQueries';
 import {
   useMutation,
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query'
 
-import { ThemeContext } from './Contexts';
+import { ThemeContext } from '../components/Contexts';
 
 const priceInput = React.createRef();
 
-const purchaseTypeWheel = ["Food / Groceries", "Gas", "Bills", "Misc."];
+const purchaseTypeWheel = ["Food", "Gas", "Bills", "Misc."];
 
 function AddPurchaseScreen({ route, navigation }): React.JSX.Element {
     const theme = useContext(ThemeContext);
@@ -50,7 +50,7 @@ function AddPurchaseScreen({ route, navigation }): React.JSX.Element {
 
     const [categoryIndex, setCategoryIndex] = React.useState(null);
     const [priceIndex, setPriceIndex] = React.useState(0);
-    const [price, setPrice] = React.useState(0);
+    const [price, setPrice] = React.useState(1);
     const [addBtnDisabled, setAddBtnDisabled] = React.useState(true);
 
     const {mutate: mutateUserData} = addUserPurchase();
@@ -75,7 +75,7 @@ function AddPurchaseScreen({ route, navigation }): React.JSX.Element {
 
             <SafeAreaView style = {styles.priceTypeContainer}>
                 <ButtonGroup 
-                    buttons = {["Food / Groceries", "Gas", "Bills", "Misc."]}
+                    buttons = {["Food", "Gas", "Bills", "Misc."]}
                     selectedIndex = {categoryIndex} 
                     onPress = {(value) => {
                         setCategoryIndex(value);

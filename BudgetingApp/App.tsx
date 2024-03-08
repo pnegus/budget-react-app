@@ -5,11 +5,11 @@
  * @format
  */
 
-import FirstLaunchScreen from './components/FirstLaunchScreen';
-import AddPurchaseScreen from './components/AddPurchaseScreen';
-import MainMenuScreen from './components/MainMenuScreen';
-import EditPurchaseScreen from './components/EditPurchaseScreen';
-import SettingsScreen from './components/SettingsScreen';
+import FirstLaunchScreen from './screens/FirstLaunchScreen';
+import AddPurchaseScreen from './screens/AddPurchaseScreen';
+import MainMenuScreen from './screens/MainMenuScreen';
+import EditPurchaseScreen from './screens/EditPurchaseScreen';
+import SettingsScreen from './screens/SettingsScreen';
 import {ThemeContext} from './components/Contexts';
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -41,6 +41,7 @@ import {
 import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
+import GettingStartedScreen from './screens/GettingStartedScreen';
 
 let checkFirstLaunchAsync = async (): Promise<boolean> => {
   let hasBeenLaunched = await AsyncStorage.getItem('hasBeenLaunched');
@@ -54,8 +55,7 @@ let setLaunchAsync = async (): Promise<void> => {
 const queryClient = new QueryClient();
 
 //CREATE NAVIGATOR STACKS
-const FirstLaunchStack = createNativeStackNavigator();
-const MainAppStack = createNativeStackNavigator();
+const StackNav = createNativeStackNavigator();
 
 function App(): React.JSX.Element {
   //check if app has been launched, then set flag
@@ -75,31 +75,47 @@ function App(): React.JSX.Element {
 
   return (
     <ThemeContext.Provider value = {theme}>
-      {
-        hasBeenLaunched === null ? (
-          <SafeAreaView style = {[styles.default, backgroundStyle]}><ActivityIndicator size = "large"/></SafeAreaView>
-        ) : 
-        hasBeenLaunched === false ? (
-          <NavigationContainer>
-            <FirstLaunchStack.Navigator>
-              <FirstLaunchStack.Screen name = "Welcome" component = {FirstLaunchScreen}/>
-            </FirstLaunchStack.Navigator>
-          </NavigationContainer>
-        ) : 
-        (
-          <QueryClientProvider client = {queryClient}>
-            <NavigationContainer>
-              <MainAppStack.Navigator>
-                <MainAppStack.Screen name = "Main Menu" component = {MainMenuScreen}/>
-                <MainAppStack.Screen name = "Settings" component = {SettingsScreen}/>
-                <MainAppStack.Screen name = "Add Purchase" component = {AddPurchaseScreen}/>
-                <MainAppStack.Screen name = "InfoContainerScreen" component = {EditPurchaseScreen}/>
-              </MainAppStack.Navigator>
-              <Toast></Toast>
-            </NavigationContainer>
-          </QueryClientProvider>
-        )
-      }
+      <QueryClientProvider client = {queryClient}>
+        <NavigationContainer>
+
+          {
+            hasBeenLaunched === null ? (
+              <SafeAreaView style = {[styles.default, backgroundStyle]}><ActivityIndicator size = "large"/></SafeAreaView>
+                ) : 
+                  hasBeenLaunched === false ? (
+                    <>
+                        <StackNav.Navigator>
+                        <StackNav.Screen name = "Welcome" component = {FirstLaunchScreen}/>
+                        <StackNav.Screen name = "Get Started" component = {GettingStartedScreen}/> 
+                        <StackNav.Screen name = "Main Menu" component = {MainMenuScreen} options={{
+                            title: "Main Menu",
+                            headerTitleStyle:{
+                                fontWeight:'bold',
+                            },
+                            headerBackVisible:false
+                          }}/>
+                        <StackNav.Screen name = "Settings" component = {SettingsScreen}/>
+                        <StackNav.Screen name = "Add Purchase" component = {AddPurchaseScreen}/>
+                        <StackNav.Screen name = "InfoContainerScreen" component = {EditPurchaseScreen}/>
+                        </StackNav.Navigator>
+                        </>
+                  ) : 
+                  (
+                    <>
+                        <StackNav.Navigator>
+                        <StackNav.Screen name = "Main Menu" component = {MainMenuScreen}/>
+                        <StackNav.Screen name = "Settings" component = {SettingsScreen}/>
+                        <StackNav.Screen name = "Add Purchase" component = {AddPurchaseScreen}/>
+                        <StackNav.Screen name = "InfoContainerScreen" component = {EditPurchaseScreen}/>
+                        </StackNav.Navigator>
+
+                        <Toast></Toast>
+                    </>
+                  )
+            }
+      </NavigationContainer>
+
+      </QueryClientProvider>
     </ThemeContext.Provider>
   );
 }
