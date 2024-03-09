@@ -13,10 +13,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: "yarn"
+          cache: npm
+          cache-dependency-path: ./BudgetingApp/package-lock.json
 
       - name: Install Node modules
-        run: yarn ci
+        run: npm ci
 
       - name: Cache Gradle Wrapper
         uses: actions/cache@v4
