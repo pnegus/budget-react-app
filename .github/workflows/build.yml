@@ -22,7 +22,7 @@ jobs:
       - name: Cache node modules
         uses: actions/cache@v4
         with:
-          path: node_modules
+          path: ./BudgetingApp/node_modules
           key: node_modules-${{hashFiles('yarn.lock')}}
           restore-keys: node_modules- # Take any latest cache if failed to find it for current yarn.lock
 
@@ -45,7 +45,7 @@ jobs:
 
       - name: Build Android
         run: |
-              cd BudgetingApp/node_modules
+              cd ./BudgetingApp/node_modules
               ls
               cd ../android && ./gradlew bundle --no-daemon
 
