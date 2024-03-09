@@ -19,7 +19,6 @@ jobs:
       - name: Install Node modules
         run: |
              npm ci
-             npm i npx
 
       # - name: Cache Gradle Wrapper
       #   uses: actions/cache@v4
@@ -40,8 +39,7 @@ jobs:
 
       - name: Build Android
         run: |
-              ls
-              npx react-native build-android --mode=release
+              cd BudgetingApp && npx react-native build-android --mode=release
       # cd BudgetingApp/android && ./gradlew bundle --no-daemon
       # Upload to Artifact
       - name: Upload Artifact
