@@ -33,7 +33,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-caches-
       - name: Make Gradlew Executable
-        run: cd android && chmod +x ./gradlew
+        run: ls && cd android && chmod +x ./gradlew
         # Build Command
 
       - name: Build Android
