@@ -18,29 +18,31 @@ jobs:
 
       - name: Install Node modules
         run: |
-             ls && npm ci
-             npm i @react-native-community/cli-platform-android
+             npm ci
+             npm i npx
 
-      - name: Cache Gradle Wrapper
-        uses: actions/cache@v4
-        with:
-          path: ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+      # - name: Cache Gradle Wrapper
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: ~/.gradle/wrapper
+      #     key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
 
-      - name: Cache Gradle Dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-caches-
-      - name: Make Gradlew Executable
-        run: cd BudgetingApp/android && chmod +x ./gradlew
-        # Build Command
+      # - name: Cache Gradle Dependencies
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: ~/.gradle/caches
+      #     key: ${{ runner.os }}-gradle-caches-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-gradle-caches-
+      # - name: Make Gradlew Executable
+      #   run: cd BudgetingApp/android && chmod +x ./gradlew
+      #   # Build Command
 
       - name: Build Android
         run: |
-          cd BudgetingApp/android && ./gradlew bundle --no-daemon
+              ls
+              npx react-native build-android --mode=release
+      # cd BudgetingApp/android && ./gradlew bundle --no-daemon
       # Upload to Artifact
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
