@@ -19,13 +19,12 @@ jobs:
         run: |
               npm ci
       
-      - name: Cache Node modules
+      - name: Cache node modules
         uses: actions/cache@v4
         with:
-          path: /BudgetingApp/node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('BudgetingApp/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-
+          path: node_modules
+          key: node_modules-${{hashFiles('yarn.lock')}}
+          restore-keys: node_modules- # Take any latest cache if failed to find it for current yarn.lock
 
       - name: Cache Gradle Wrapper
         uses: actions/cache@v4
