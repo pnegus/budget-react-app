@@ -39,6 +39,7 @@ jobs:
 
       - name: Build Android
         run: |
+              npx react-native doctor
               cd BudgetingApp && npx react-native build-android --mode=release
       # cd BudgetingApp/android && ./gradlew bundle --no-daemon
       # Upload to Artifact
