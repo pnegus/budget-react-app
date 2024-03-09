@@ -33,15 +33,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-caches-
       - name: Make Gradlew Executable
-        run: ls && cd android && chmod +x ./gradlew
+        run: cd BudgetingApp/android && chmod +x ./gradlew
         # Build Command
 
       - name: Build Android
         run: |
-          cd android && ./gradlew bundle --no-daemon
+          cd BudgetingApp/android && ./gradlew bundle --no-daemon
       # Upload to Artifact
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: BudgetingApp.aab
-          path: "android/app/build/outputs/bundle/release/app-release.aab"
+          path: "BudgetingApp/android/app/build/outputs/bundle/release/app-release.aab"
