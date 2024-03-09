@@ -18,7 +18,7 @@ jobs:
 
       - name: Install Node modules
         run: |
-             npm ci
+              npm ci
 
       - name: Cache Gradle Wrapper
         uses: actions/cache@v4
@@ -33,14 +33,19 @@ jobs:
           key: ${{ runner.os }}-gradle-caches-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-caches-
+
       - name: Make Gradlew Executable
         run: cd BudgetingApp/android && chmod +x ./gradlew
 
       - name: Build Android
         run: |
-              npx react-native doctor
-              cd BudgetingApp && npx react-native build-android --mode=release
-      # cd BudgetingApp/android && ./gradlew bundle --no-daemon
+              cd BudgetingApp/node_modules
+              ls
+              cd ../android && ./gradlew bundle --no-daemon
+
+# npx react-native doctor
+# cd BudgetingApp && npx react-native build-android --mode=release
+
       # Upload to Artifact
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
