@@ -6,14 +6,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with: 
-          sparse-checkout: 'BudgetingApp'
+        # with: 
+        #   sparse-checkout: 'BudgetingApp'
+
+      - name: Change directory
+        run: ls && cd BudgetingApp 
 
       - name: Use Node.js 18
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache-dependency-path: ./BudgetingApp/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install Node modules
         run: |
@@ -22,7 +25,7 @@ jobs:
       - name: Cache node modules
         uses: actions/cache@v4
         with:
-          path: ./BudgetingApp/node_modules
+          path: node_modules
           key: node_modules-${{hashFiles('yarn.lock')}}
           restore-keys: node_modules- # Take any latest cache if failed to find it for current yarn.lock
 
@@ -41,13 +44,13 @@ jobs:
             ${{ runner.os }}-gradle-caches-
 
       - name: Make Gradlew Executable
-        run: cd BudgetingApp/android && chmod +x ./gradlew
+        run: cd android && chmod +x ./gradlew
 
       - name: Build Android
         run: |
-              cd ./BudgetingApp/node_modules
+              cd node_modules
               ls
-              cd ../android && ./gradlew bundle --no-daemon
+              cd android && ./gradlew bundle --no-daemon
 
 # npx react-native doctor
 # cd BudgetingApp && npx react-native build-android --mode=release
@@ -57,4 +60,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: BudgetingApp.aab
-          path: "BudgetingApp/android/app/build/outputs/bundle/release/app-release.aab"
+          path: "android/app/build/outputs/bundle/release/app-release.aab"
