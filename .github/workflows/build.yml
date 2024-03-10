@@ -8,6 +8,10 @@ jobs:
       - uses: actions/checkout@v4
         with: 
           sparse-checkout: 'BudgetingApp'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin' # See 'Supported distributions' for available options
+          java-version: '17'
 
       - name: Use Node.js 18
         uses: actions/setup-node@v4
