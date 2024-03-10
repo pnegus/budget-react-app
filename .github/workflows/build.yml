@@ -6,8 +6,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        # with: 
-        #   sparse-checkout: 'BudgetingApp'
+        with: 
+          sparse-checkout: 'BudgetingApp'
 
       - name: Change directory
         run: ls && cd BudgetingApp 
