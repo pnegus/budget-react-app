@@ -22,7 +22,6 @@ jobs:
       - name: Install Node modules
         run: |
               cd BudgetingApp && npm ci
-              ls
       
       - name: Cache node modules
         uses: actions/cache@v4
@@ -31,18 +30,27 @@ jobs:
           key: node_modules-${{hashFiles('BudgetingApp/package-lock.json')}}
           restore-keys: node_modules- # Take any latest cache if failed to find it for current yarn.lock
         
+      - name: Cache Gradle Wrapper
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('BudgetingApp/gradle/wrapper/gradle-wrapper.properties') }}
 
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('BudgetingApp/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-caches-
+
+        # Build Command
       - name: Make Gradlew Executable
         run: cd BudgetingApp/android && chmod +x ./gradlew
 
       - name: Build Android
         run: |
-              cd BudgetingApp/node_modules
-              ls
-              cd ../android && ./gradlew bundle --no-daemon
-
-# npx react-native doctor
-# cd BudgetingApp && npx react-native build-android --mode=release
+              cd BudgetingApp/android && ./gradlew bundle --no-daemon
 
       # Upload to Artifact
       - name: Upload Artifact
