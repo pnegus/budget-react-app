@@ -51,8 +51,8 @@ jobs:
       - name: Build Android
         run: |
               cd BudgetingApp/android && ./gradlew assembleDebug --no-daemon 
-              ls BudgetingApp/android/app/build/outputs/
-              cd apk && ls
+              ls app/build/outputs/apk/
+              ls app/build/outputs/apk/debug
 
       # Upload to Artifact
       - name: Upload apk artifact
