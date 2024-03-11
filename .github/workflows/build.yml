@@ -50,7 +50,9 @@ jobs:
 
       - name: Build Android
         run: |
-              cd BudgetingApp/android && ./gradlew assembleDebug --no-daemon 
+              cd BudgetingApp && npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
+# cd BudgetingApp/android && ./gradlew assembleRelease --no-daemon 
+              
 
       # Upload to Artifact
       - name: Upload apk artifact
