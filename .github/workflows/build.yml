@@ -51,12 +51,10 @@ jobs:
       - name: Build Android
         run: |
               cd BudgetingApp/android && ./gradlew assembleDebug --no-daemon 
-              ls app/build/outputs/apk/
-              ls app/build/outputs/apk/debug
 
       # Upload to Artifact
       - name: Upload apk artifact
         uses: actions/upload-artifact@v4
         with:
           name: BudgetingApp-debug.apk
-          path: "BudgetingApp/android/app/build/outputs/apk/BudgetingApp-debug.apk"
+          path: "BudgetingApp/android/app/build/outputs/apk/debug/app-debug.apk"
