@@ -76,7 +76,7 @@ function MainMenuScreen({ route, navigation }): React.JSX.Element {
   }, [navigation]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, backgroundStyle]}>
         <SafeAreaView style={styles.infoContainer}>
         {
         isUserDataPending ? 

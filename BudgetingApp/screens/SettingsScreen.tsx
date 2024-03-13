@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
     SafeAreaView,
@@ -25,12 +25,12 @@ import { resetData, editUserBudget } from '../components/AppQueries';
 import EditPurchaseScreen from './EditPurchaseScreen';
 import ShowDataScreen from './ShowDataScreen';
 
-function SettingsScreen(): React.JSX.Element {
-    const isDarkMode = useColorScheme() === 'dark';
+import { ThemeContext } from '../components/Contexts';
 
-    const backgroundStyle = {
-        backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    };
+
+function SettingsScreen(): React.JSX.Element {
+    const theme = useContext(ThemeContext);
+    const backgroundStyle = {backgroundColor: theme === 'dark' ? Colors.darker : Colors.lighter};
 
     const {mutate: mutateUserBudget} = editUserBudget();
     const editBudgetInput = React.createRef();
