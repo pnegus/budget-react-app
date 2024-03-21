@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 function SettingsOverlay({title, icon, content, action}): React.JSX.Element {
+    
 const [visible, setVisible] = useState(false);
 
 const toggleOverlay = () => {
